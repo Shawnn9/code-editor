@@ -12,9 +12,9 @@
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
     "axios": "^1.7.9",
-    "cra-template": "1.2.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^7.0.2",
     "react-scripts": "^5.0.1",
     "resize-observer-polyfill": "^1.5.1",
     "web-vitals": "^4.2.4"
@@ -23,6 +23,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "lint": "eslint .",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -42,5 +43,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1"
   }
 }
