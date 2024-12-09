@@ -2,6 +2,7 @@
   "name": "code-editor",
   "version": "0.1.0",
   "private": true,
+  "keywords": ["javascript", "html", "react", "editor", "code"],
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
     "cra-template": "1.2.0",
