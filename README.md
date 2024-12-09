@@ -1,4 +1,4 @@
-# 🤖 **Code Editor Project** 🤖
+# 🌐 **Code Editor Project** 🌐
 
 ## 🚀 **Technologies Used**
 
@@ -59,3 +59,21 @@ To get started with this code editor on your local machine, follow these install
 ```bash
 git clone https://github.com/Shawnn9/code-editor.git
 cd code-editor
+```
+
+### 2. **Install Dependencies**
+
+```bash
+npm install
+nspm start
+# The app should open in your default browser at http://localhost:3000.
+```
+
+### 3. **Set up the Flask Backend**
+
+```bash
+cd backend
+pip install flask flask-cors
+python server.py
+# The backend will run at http://127.0.0.1:5000.
+
