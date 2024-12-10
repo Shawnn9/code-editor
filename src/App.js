@@ -3,18 +3,18 @@ import Editor from '@monaco-editor/react';
 import './App.css';
 
 const App = () => {
-  const [language, setLanguage] = useState('javascript'); // Selected language
-  const [code, setCode] = useState('// Write your code here'); // Editor content
-  const [output, setOutput] = useState(''); // Output
-  const [sidebarOpen, setSidebarOpen] = useState(true); // Sidebar visibility state
+  const [language, setLanguage] = useState('javascript');
+  const [code, setCode] = useState('// Write your code here');
+  const [output, setOutput] = useState('');
+  const [theme, setTheme] = useState('vs-dark'); // Default theme is dark
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [search, setSearch] = useState('');
 
-  // Handle language selection
   const handleLanguageChange = (lang) => {
     setLanguage(lang);
     setCode(getStarterCode(lang));
   };
 
-  // Starter code for each language
   const getStarterCode = (lang) => {
     switch (lang) {
       case 'javascript':
@@ -29,8 +29,6 @@ const App = () => {
         return `#include <stdio.h>\n\nint main() {\n    printf("Hello, C!\\n");\n    return 0;\n}`;
       case 'cpp':
         return `#include <iostream>\n\nint main() {\n    std::cout << "Hello, C++!" << std::endl;\n    return 0;\n}`;
-      case 'java':
-        return `public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, Java!");\n    }\n}`;
       case 'php':
         return `<?php\n\necho "Hello, PHP!";\n?>`;
       default:
@@ -38,9 +36,8 @@ const App = () => {
     }
   };
 
-  // Handle "Run Code" button
   const handleRunCode = async () => {
-    if (['python', 'c', 'cpp', 'java', 'php'].includes(language)) {
+    if (['python', 'c', 'cpp', 'php'].includes(language)) {
       try {
         const response = await fetch('http://127.0.0.1:5000/execute', {
           method: 'POST',
@@ -88,75 +85,90 @@ const App = () => {
       }
       setOutput('Code rendered in the output frame.');
     } else {
-      setOutput(`Running ${language} is not supported.`);
+      setOutput('Unsupported language for execution.');
     }
   };
 
-  // Clear the output
+  const handleThemeChange = (newTheme) => {
+    setTheme(newTheme);
+  };
+
   const clearOutput = () => {
     setOutput('');
   };
 
-  // Toggle the sidebar visibility
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const filteredLanguages = [
+    { lang: 'javascript', name: 'JavaScript' },
+    { lang: 'html', name: 'HTML' },
+    { lang: 'css', name: 'CSS' },
+    { lang: 'python', name: 'Python' },
+    { lang: 'cpp', name: 'C++' },
+    { lang: 'php', name: 'PHP' },
+  ].filter(item => item.name.toLowerCase().includes(search.toLowerCase()));
+
   return (
     <div className="App">
-      {/* Sidebar */}
       <div className={`Sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <button onClick={toggleSidebar} className="Sidebar-toggle">
           {sidebarOpen ? '>' : '<'}
         </button>
         <h3>Languages</h3>
-        {[ // List of language icons and names
-          { lang: 'javascript', img: '/images/js.png', name: 'JavaScript' },
-          { lang: 'html', img: '/images/html.png', name: 'HTML' },
-          { lang: 'css', img: '/images/css.png', name: 'CSS' },
-          { lang: 'python', img: '/images/python.png', name: 'Python' },
-          { lang: 'cpp', img: '/images/c-.png', name: 'C++' },
-          { lang: 'java', img: '/images/java.png', name: 'Java' },
-          { lang: 'php', img: '/images/php.png', name: 'PHP' },
-        ].map((item) => (
-          <div
-            key={item.lang}
-            className={`Sidebar-item ${language === item.lang ? 'active' : ''}`}
-            onClick={() => handleLanguageChange(item.lang)}
-          >
-            <img src={item.img} alt={item.name} className="Sidebar-icon" />
-            {sidebarOpen && <span>{item.name}</span>}
-          </div>
-        ))}
+        <input
+          type="text"
+          placeholder="Search languages"
+          value={search}
+          onChange={handleSearch}
+          className="Sidebar-search"
+        />
+        <div className="Sidebar-languages">
+          {filteredLanguages.map((item) => (
+            <div
+              key={item.lang}
+              className={`Sidebar-item ${language === item.lang ? 'active' : ''}`}
+              onClick={() => handleLanguageChange(item.lang)}
+            >
+              {sidebarOpen && <span>{item.name}</span>}
+            </div>
+          ))}
+        </div>
+        {/* Dark/Light Theme Buttons */}
+        <div className="ThemeButtons">
+          <button onClick={() => handleThemeChange('vs-dark')} className="ThemeButton">
+            <img src="https://img.icons8.com/ios-filled/50/000000/moon.png" alt="Dark Mode" />
+          </button>
+          <button onClick={() => handleThemeChange('vs')} className="ThemeButton">
+            <img src="https://img.icons8.com/ios-filled/50/000000/sun.png" alt="Light Mode" />
+          </button>
+        </div>
       </div>
 
-      {/* Main Section */}
       <div className="Main-section">
-        {/* Editor Section */}
         <div className="Editor">
+          <div className="Editor-header">
+            <button className="RunButton" onClick={handleRunCode}>Run Code</button>
+          </div>
           <Editor
-            height="calc(100% - 50px)" // Adjusted height to account for button height
+            height="calc(100% - 50px)"
             language={language}
             value={code}
             onChange={(value) => setCode(value)}
-            theme="vs-dark"
-            key={language}
+            theme={theme}
           />
-          {/* Run Code Button inside Editor */}
-          <div className="RunButton-container">
-            <button className="RunButton" onClick={handleRunCode}>
-              Run Code
-            </button>
-          </div>
         </div>
 
-        {/* Output Section */}
         <div className="Output">
           <h3>Output:</h3>
           <div className="Output-header">
-            <button className="ClearButton" onClick={clearOutput}>
-              Clear Output
-            </button>
+            {/* Clear Output Button inside Output */}
+            <button className="ClearButton" onClick={clearOutput}>Clear Output</button>
           </div>
           {language === 'html' || language === 'css' ? (
             <iframe id="output-frame"></iframe>
