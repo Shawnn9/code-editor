@@ -48,6 +48,11 @@
     "registry": "https://npm.pkg.github.com"
   },
   "devDependencies": {
-    "eslint": "^8.57.1"
+    "@testing-library/react": "^16.1.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "jest": "^27.5.1",
+    "prettier": "^3.4.2"
   }
 }
